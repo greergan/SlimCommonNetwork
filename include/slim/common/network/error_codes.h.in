@@ -1,0 +1,101 @@
+#ifndef SLIM_COMMON_NETWORK_ERROR_CODES_H
+#define SLIM_COMMON_NETWORK_ERROR_CODES_H
+
+#include <cstdint>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <array>
+
+#define SLIMCOMMONNETWORK_VERSION  "@SLIMCOMMONNETWORK_VERSION@"
+#define SLIMCOMMONNETWORK_GIT_HASH "@SLIMCOMMONNETWORK_GIT_HASH@"
+
+namespace slim::common::network {
+
+enum class ErrorStatus : uint8_t {
+    OK = 0,
+    // Socket
+    SocketAddressResolutionFailed,
+    SocketAddressConversionFailed,
+    SocketCreationFailed,
+    SocketFlagGetFailed,
+    SocketFlagSetFailed,
+    SocketConnectionFailed,
+    SocketConnectionTimedOut,
+    SocketPollFailed,
+    // TLS
+    TlsNotSupported,
+    TlsHandleCreationFailed,
+    TlsSocketBindFailed,
+    TlsHandshakeFailed,
+    TlsHandshakeTimedOut,
+    TlsHandshakePollFailed,
+    // Read
+    ReadPollFailed,
+    ReadFailed,
+    ReadTlsFailed,
+    // Write
+    WritePollFailed,
+    WriteTimedOut,
+    WriteFailed,
+    WriteTlsFailed,
+    END
+};
+
+namespace error::status {
+    constexpr std::array<std::string_view, static_cast<std::size_t>(ErrorStatus::END)> strings = {
+        "OK",                                                                     // OK
+        // Socket
+        "Failed to resolve host address",                                         // SocketAddressResolutionFailed
+        "Failed to convert IP address",                                           // SocketAddressConversionFailed
+        "Failed to create socket",                                                // SocketCreationFailed
+        "Failed to get socket flags",                                             // SocketFlagGetFailed
+        "Failed to set socket flags",                                             // SocketFlagSetFailed
+        "Failed to connect to server",                                            // SocketConnectionFailed
+        "Connection to server timed out",                                         // SocketConnectionTimedOut
+        "Socket poll failed",                                                     // SocketPollFailed
+        // TLS
+        "TLS requested but SLIM_TLS_ENABLED not set at compile time",             // TlsNotSupported
+        "Failed to create TLS handle",                                            // TlsHandleCreationFailed
+        "Failed to bind TLS to socket",                                           // TlsSocketBindFailed
+        "TLS handshake failed",                                                   // TlsHandshakeFailed
+        "TLS handshake timed out",                                                // TlsHandshakeTimedOut
+        "TLS handshake poll failed",                                              // TlsHandshakePollFailed
+        // Read
+        "Read poll failed",                                                       // ReadPollFailed
+        "Failed to read from socket",                                             // ReadFailed
+        "Failed to read from TLS socket",                                         // ReadTlsFailed
+        // Write
+        "Write poll failed",                                                      // WritePollFailed
+        "Write to socket timed out",                                              // WriteTimedOut
+        "Failed to write to socket",                                              // WriteFailed
+        "Failed to write to TLS socket",                                          // WriteTlsFailed
+    };
+
+    [[nodiscard]] constexpr std::string_view to_string(ErrorStatus status) noexcept {
+        const auto index = static_cast<std::size_t>(status);
+        if(index < strings.size()) return strings[index];
+        return "Unknown";
+    }
+}
+
+class NetworkException : public std::runtime_error {
+public:
+    explicit NetworkException(ErrorStatus e)
+        : std::runtime_error(std::string{error::status::to_string(e)}), status_(e) {}
+
+    explicit NetworkException(std::string msg)
+        : std::runtime_error(std::move(msg)), status_(ErrorStatus::OK) {}
+
+    explicit NetworkException(ErrorStatus e, std::string msg)
+        : std::runtime_error(std::move(msg)), status_(e) {}
+
+    ErrorStatus error() const noexcept { return status_; }
+
+private:
+    ErrorStatus status_ = ErrorStatus::OK;
+};
+
+} // namespace slim::common::network
+
+#endif // SLIM_COMMON_NETWORK_ERROR_CODES_H
