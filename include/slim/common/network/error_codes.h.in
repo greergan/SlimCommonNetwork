@@ -14,6 +14,7 @@ namespace slim::common::network {
 
 enum class ErrorStatus : uint8_t {
     OK = 0,
+    OutOfMemory,
     // Socket
     SocketAddressResolutionFailed,
     SocketAddressConversionFailed,
@@ -45,6 +46,7 @@ enum class ErrorStatus : uint8_t {
 namespace error::status {
     constexpr std::array<std::string_view, static_cast<std::size_t>(ErrorStatus::END)> strings = {
         "OK",                                                                     // OK
+        "Out of memory",                                                          // OutOfMemory
         // Socket
         "Failed to resolve host address",                                         // SocketAddressResolutionFailed
         "Failed to convert IP address",                                           // SocketAddressConversionFailed
