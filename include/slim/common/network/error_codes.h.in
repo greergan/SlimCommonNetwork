@@ -40,6 +40,15 @@ enum class ErrorStatus : uint8_t {
     WriteTimedOut,
     WriteFailed,
     WriteTlsFailed,
+    // Server: listen socket
+    ListenSocketCreationFailed,
+    ListenAddressInvalid,
+    ListenSocketBindFailed,
+    ListenSocketListenFailed,
+    // Server: TLS
+    TlsContextCreationFailed,
+    TlsCertificateLoadFailed,
+    TlsPrivateKeyLoadFailed,
     END
 };
 
@@ -72,6 +81,15 @@ namespace error::status {
         "Write to socket timed out",                                              // WriteTimedOut
         "Failed to write to socket",                                              // WriteFailed
         "Failed to write to TLS socket",                                          // WriteTlsFailed
+        // Server: listen socket
+        "Failed to create listen socket",                                         // ListenSocketCreationFailed
+        "Invalid listen address",                                                 // ListenAddressInvalid
+        "Failed to bind listen socket",                                           // ListenSocketBindFailed
+        "Failed to listen on socket",                                             // ListenSocketListenFailed
+        // Server: TLS
+        "Failed to create TLS context",                                           // TlsContextCreationFailed
+        "Failed to load TLS certificate",                                         // TlsCertificateLoadFailed
+        "Failed to load TLS private key",                                         // TlsPrivateKeyLoadFailed
     };
 
     [[nodiscard]] constexpr std::string_view to_string(ErrorStatus status) noexcept {
