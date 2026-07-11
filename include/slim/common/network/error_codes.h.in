@@ -31,6 +31,11 @@ enum class ErrorStatus : uint8_t {
     TlsHandshakeFailed,
     TlsHandshakeTimedOut,
     TlsHandshakePollFailed,
+    // Ktls
+    KtlsCipherUnsupported,
+    KtlsRxSetupFailed,
+    KtlsTxSetupFailed,
+    KtlsUlpEnableFailed,
     // Read
     ReadPollFailed,
     ReadFailed,
@@ -72,6 +77,11 @@ namespace error::status {
         "TLS handshake failed",                                                   // TlsHandshakeFailed
         "TLS handshake timed out",                                                // TlsHandshakeTimedOut
         "TLS handshake poll failed",                                              // TlsHandshakePollFailed
+        // Ktls
+        "Ktls cipher suite unsupported",                                          // KtlsCipherUnsupported
+        "Ktls RX setup failed",                                                   // KtlsRxSetupFailed
+        "Ktls TX setup failed",                                                   // KtlsTxSetupFailed
+        "Ktls ULP enable failed",                                                 // KtlsUlpEnableFailed
         // Read
         "Read poll failed",                                                       // ReadPollFailed
         "Failed to read from socket",                                             // ReadFailed

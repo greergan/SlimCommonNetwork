@@ -24,7 +24,7 @@ CI/CD supplied by unified workflows provided by [SlimLibraryPackager](https://co
 
 This library provides the shared vocabulary of error conditions used across SlimCommon's network-related libraries:
 
-- A single `ErrorStatus` enum covering socket connection, optional TLS handshake, read, and write failures, in [`error_codes.h.in`](include/slim/common/network/error_codes.h.in)
+- A single `ErrorStatus` enum covering socket connection, optional TLS handshake, kTLS setup, read, write, and server-side listen/TLS-context failures, in [`error_codes.h.in`](include/slim/common/network/error_codes.h.in)
 - A `constexpr` lookup table mapping every `ErrorStatus` value to a human-readable description
 - `NetworkException`, a `std::runtime_error`-derived exception type that carries an `ErrorStatus` alongside its message
 
@@ -34,7 +34,7 @@ This library provides the shared vocabulary of error conditions used across Slim
 
 | Feature | Description |
 |---------|-------------|
-| Unified error enum | Single `ErrorStatus` type shared by socket, TLS, read, and write code, avoiding divergent per-layer error types |
+| Unified error enum | Single `ErrorStatus` type shared by socket, TLS, kTLS, read, write, and server-side code, avoiding divergent per-layer error types |
 | Human-readable lookup | `error::status::to_string()` resolves any `ErrorStatus` to a descriptive string at compile time |
 | Structured exceptions | `NetworkException` pairs a thrown error with its originating `ErrorStatus` for programmatic handling |
 | Version macros | `SLIMCOMMONNETWORK_VERSION` and `SLIMCOMMONNETWORK_GIT_HASH` are injected at build time |
@@ -50,6 +50,7 @@ All of [`error_codes.h.in`](include/slim/common/network/error_codes.h.in)'s look
 | Value | Meaning |
 |-------|---------|
 | `OK` | Success |
+| `OutOfMemory` | Out of memory |
 | `SocketAddressResolutionFailed` | Failed to resolve host address |
 | `SocketAddressConversionFailed` | Failed to convert IP address |
 | `SocketCreationFailed` | Failed to create socket |
@@ -64,6 +65,10 @@ All of [`error_codes.h.in`](include/slim/common/network/error_codes.h.in)'s look
 | `TlsHandshakeFailed` | TLS handshake failed |
 | `TlsHandshakeTimedOut` | TLS handshake timed out |
 | `TlsHandshakePollFailed` | TLS handshake poll failed |
+| `KtlsCipherUnsupported` | Ktls cipher suite unsupported |
+| `KtlsRxSetupFailed` | Ktls RX setup failed |
+| `KtlsTxSetupFailed` | Ktls TX setup failed |
+| `KtlsUlpEnableFailed` | Ktls ULP enable failed |
 | `ReadPollFailed` | Read poll failed |
 | `ReadFailed` | Failed to read from socket |
 | `ReadTlsFailed` | Failed to read from TLS socket |
@@ -71,6 +76,13 @@ All of [`error_codes.h.in`](include/slim/common/network/error_codes.h.in)'s look
 | `WriteTimedOut` | Write to socket timed out |
 | `WriteFailed` | Failed to write to socket |
 | `WriteTlsFailed` | Failed to write to TLS socket |
+| `ListenSocketCreationFailed` | Failed to create listen socket |
+| `ListenAddressInvalid` | Invalid listen address |
+| `ListenSocketBindFailed` | Failed to bind listen socket |
+| `ListenSocketListenFailed` | Failed to listen on socket |
+| `TlsContextCreationFailed` | Failed to create TLS context |
+| `TlsCertificateLoadFailed` | Failed to load TLS certificate |
+| `TlsPrivateKeyLoadFailed` | Failed to load TLS private key |
 
 `ErrorStatus::END` is a sentinel marking the end of the enum and is not a valid status value.
 
