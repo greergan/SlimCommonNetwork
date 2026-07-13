@@ -36,6 +36,7 @@ enum class ErrorStatus : uint8_t {
     KtlsRxSetupFailed,
     KtlsTxSetupFailed,
     KtlsUlpEnableFailed,
+    KtlsUnavailable,
     // Read
     ReadPollFailed,
     ReadFailed,
@@ -82,6 +83,7 @@ namespace error::status {
         "Ktls RX setup failed",                                                   // KtlsRxSetupFailed
         "Ktls TX setup failed",                                                   // KtlsTxSetupFailed
         "Ktls ULP enable failed",                                                 // KtlsUlpEnableFailed
+        "Ktls unavailable, using userspace TLS",                                  // KtlsUnavailable
         // Read
         "Read poll failed",                                                       // ReadPollFailed
         "Failed to read from socket",                                             // ReadFailed
